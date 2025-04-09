@@ -1,103 +1,59 @@
 import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, Image } from 'react-native';
+import { View, Text, FlatList, Image, Button, StyleSheet, useColorScheme } from 'react-native';
 import { GlobalContext } from '../context/GlobalContext';
+import { useNavigation } from '@react-navigation/native';
 
-interface Entry {
-  imageUri: string;
-  address: string;
-}
+const Home = () => {
+  const context = useContext(GlobalContext);
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme();
 
-const Home: React.FC = () => {
-  const { entries, removeEntry, theme, toggleTheme } = useContext(GlobalContext);
+  if (!context) return null;
 
-  const themeStyles = theme === 'dark' ? darkModeStyles : lightModeStyles;
-
-  if (!entries || entries.length === 0) {
-    return (
-      <View style={[styles.container, themeStyles.container]}>
-        <Text style={[styles.noEntriesText, themeStyles.noEntriesText]}>No Entries yet.</Text>
-        <Button title="Toggle Theme" onPress={toggleTheme} />
-      </View>
-    );
-  }
+  const { entries, removeEntry, theme, toggleTheme } = context;
 
   return (
-    <View style={[styles.container, themeStyles.container]}>
-      <FlatList
-        data={entries}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <View style={[styles.entryContainer, themeStyles.entryContainer]}>
-            <Image source={{ uri: item.imageUri }} style={styles.image} />
-            <Text style={[styles.addressText, themeStyles.addressText]}>{item.address}</Text>
-            <Button
-              title="Remove"
-              onPress={() => removeEntry(index)}
-              color="red"
-            />
-          </View>
-        )}
-      />
-      <Button title="Toggle Theme" onPress={toggleTheme} />
+    <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#000' : '#fff' }]}>
+      <Button title="Add New Entry" onPress={() => navigation.navigate('TravelEntry')} />
+      <Button title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`} onPress={toggleTheme} />
+
+      {entries.length === 0 ? (
+        <Text style={[styles.noEntries, { color: theme === 'dark' ? '#fff' : '#000' }]}>No Entries yet</Text>
+      ) : (
+        <FlatList
+          data={entries}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <View style={styles.entry}>
+              <Image source={{ uri: item.imageUri }} style={styles.image} />
+              <Text style={{ color: theme === 'dark' ? '#fff' : '#000' }}>{item.address}</Text>
+              <Button title="Remove" color="red" onPress={() => removeEntry(index)} />
+            </View>
+          )}
+        />
+      )}
     </View>
   );
 };
 
-const lightModeStyles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-  },
-  noEntriesText: {
-    color: '#333',
-  },
-  entryContainer: {
-    backgroundColor: '#fff',
-  },
-  addressText: {
-    color: '#333',
-  },
-});
-
-const darkModeStyles = StyleSheet.create({
-  container: {
-    backgroundColor: '#222',
-  },
-  noEntriesText: {
-    color: '#ddd',
-  },
-  entryContainer: {
-    backgroundColor: '#333',
-  },
-  addressText: {
-    color: '#ddd',
-  },
-});
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
   },
-  noEntriesText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 50,
-  },
-  entryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  entry: {
     marginBottom: 20,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 5,
-    marginRight: 10,
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
   },
-  addressText: {
-    flex: 1,
-    fontSize: 16,
+  noEntries: {
+    marginTop: 40,
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
-
-export default Home;
