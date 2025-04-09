@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react';
 import { View, Button, Image, StyleSheet, TextInput, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import { GlobalContext } from './screens/GlobalContext';
-import { formatAddress } from './Geolocation'; // Reuse the formatAddress function
+import { GlobalContext } from './context/GlobalContext';
+import { formatAddress } from './Geolocation'; 
 
 export default function CameraScreen() {
   const { addEntry } = useContext(GlobalContext);

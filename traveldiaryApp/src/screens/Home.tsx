@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, Button, Image } from 'react-native';
-import { GlobalContext } from './GlobalContext';
+import { GlobalContext } from '../context/GlobalContext';
 
 interface Entry {
   imageUri: string;
