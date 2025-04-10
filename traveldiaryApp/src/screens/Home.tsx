@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   addressDark: {
-    color: '#ddd',
+    color: '#333',
   },
   addButton: {
     position: 'absolute',

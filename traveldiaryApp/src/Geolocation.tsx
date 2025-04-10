@@ -47,21 +47,21 @@ export default function GeolocationScreen() {
     });
     setAddress(
       formatAddress(
-        address[0].name ?? '',
         address[0].city ?? '',
         address[0].region ?? '',
-        address[0].postalCode ?? ''
+        address[0].postalCode ?? '',
+        address[0].country ?? ''
       )
     );
   };
 
   function formatAddress(
-    name: string,
+    country: string,
     city: string,
     region: string,
     postalCode: string
   ): string {
-    return name + ', ' + city + ', ' + region + ' ' + postalCode;
+    return `${city}, ${region}, ${postalCode}, ${country}`.trim();
   }
 
   return (

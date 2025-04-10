@@ -1,5 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { View, Button, Image, Text, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
@@ -14,6 +21,8 @@ const TravelEntry = () => {
 
   if (!context) return null;
   const { addEntry, theme } = context;
+
+  const isDark = theme === 'dark';
 
   const takePicture = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -42,8 +51,8 @@ const TravelEntry = () => {
 
     if (geocode.length > 0) {
       const place = geocode[0];
-      const fullAddress = `${place.name}, ${place.street}, ${place.city}`;
-      setAddress(fullAddress);
+      const fullAddress = `${place.city ?? ''}, ${place.region ?? ''}, ${place.country ?? ''}`;
+      setAddress(fullAddress.trim().replace(/\s{2,}/g, ' '));
     } else {
       setAddress('Address not found');
     }
@@ -75,14 +84,37 @@ const TravelEntry = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#000' : '#fff' }]}>
-      <Button title="Take Picture" onPress={takePicture} />
+    <View style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+      <TouchableOpacity style={styles.button} onPress={takePicture}>
+        <Text style={[styles.buttonText, { color: isDark ? '#fff' : '#000' }]}>Take Picture</Text>
+      </TouchableOpacity>
+
       {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
-      {address ? <Text style={[styles.address, { color: theme === 'dark' ? '#fff' : '#000' }]}>{address}</Text> : null}
+      {address ? (
+        <Text style={[styles.address, { color: isDark ? '#fff' : '#000' }]}>{address}</Text>
+      ) : null}
 
       <View style={styles.buttonRow}>
-        <Button title="Save" onPress={handleSave} disabled={!imageUri || !address} />
-        <Button title="Cancel" color="red" onPress={handleCancel} />
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            {
+              backgroundColor: !imageUri || !address ? '#ccc' : '#007AFF',
+              opacity: !imageUri || !address ? 0.6 : 1,
+            },
+          ]}
+          onPress={handleSave}
+          disabled={!imageUri || !address}
+        >
+          <Text style={styles.actionText}>Save</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: 'red' }]}
+          onPress={handleCancel}
+        >
+          <Text style={styles.actionText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -104,10 +136,31 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 16,
     marginBottom: 10,
+    textAlign: 'center',
+  },
+  button: {
+    borderWidth: 1,
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+    borderColor: '#ccc',
+  },
+  buttonText: {
+    fontSize: 16,
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: 20,
+  },
+  actionButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  actionText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });

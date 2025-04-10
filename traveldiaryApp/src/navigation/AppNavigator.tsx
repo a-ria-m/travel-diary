@@ -1,18 +1,31 @@
-import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
-import Home from './screens/Home'; // Home screen
-import TravelEntry from './screens/travelEntry'; // Travel Entry screen
+import React, { useContext } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import Home from '../screens/Home';
+import TravelEntry from '../screens/TravelEntry';
+import { GlobalContext } from '../context/GlobalContext';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const AppNavigator = () => {
+  const context = useContext(GlobalContext);
+  if (!context) return null;
+
+  const { theme } = context;
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        {/* Core Screens */}
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="TravelEntry" component={TravelEntry} />
+    <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TravelEntry"
+          component={TravelEntry}
+          options={{ title: 'New Entry' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
