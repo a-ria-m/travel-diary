@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import Home from '../screens/Home';
-import TravelEntry from '../screens/TravelEntry';
+import TravelEntry from '../screens/travelEntry';
 import { GlobalContext } from '../context/GlobalContext';
 
 const Stack = createStackNavigator();
@@ -19,7 +19,7 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="TravelEntry"
